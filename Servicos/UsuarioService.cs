@@ -30,6 +30,16 @@ namespace Servicos
             }).FirstOrDefaultAsync();
         }
 
+        public async Task<ViewModels.UsuarioViewModel> RecuperarPorDocumento(string documento)
+        {
+            return await _db.Usuarios.Select(c => new ViewModels.UsuarioViewModel
+            {
+                Id = c.Id,
+                Nome = c.Nome,
+                Email = c.Email,
+            }).FirstOrDefaultAsync(c => c.Email == documento);
+        }
+
 
         //public async Task AlterarSenha(int idUsuario, string senha, Guid token)
         //{

@@ -1,16 +1,23 @@
+using Api.Security;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Logging;
 using Microsoft.OpenApi.Models;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace Api
@@ -23,20 +30,41 @@ namespace Api
         }
 
         public IConfiguration Configuration { get; }
+        public IWebHostEnvironment Env { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddMemoryCache();
+            services.AddApplicationInsightsTelemetry();
+
+            services.AddDbContext<Entidades.EntidadesContext>(options => options.UseSqlServer(Configuration.GetConnectionString("ConnStr"), x => x.MigrationsAssembly("Entidades")));
+            services.AddScoped<Entidades.EntidadesContext, Entidades.EntidadesContext>();
 
             services.AddControllers();
+            services.AddScoped<Servicos.UsuarioService>();
+            services.AddScoped<AccessManager>();
+            services.AddScoped<UsuarioLogado>();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "CadastroVotacao", Version = "v1" });
             });
 
-            services.AddDbContext<Entidades.EntidadesContext>(options => options.UseSqlServer(Configuration.GetConnectionString("ConnStr"), x => x.MigrationsAssembly("Entidades")));
-            services.AddScoped<Entidades.EntidadesContext, Entidades.EntidadesContext>();
+            var signingConfigurations = new SigningConfigurations();
+            services.AddSingleton(signingConfigurations);
 
+            var tokenConfigurations = new TokenConfigurations();
+            new ConfigureFromConfigurationOptions<TokenConfigurations>(
+                Configuration.GetSection("TokenConfigurations"))
+                    .Configure(tokenConfigurations);
+            services.AddSingleton(tokenConfigurations);
+
+            services.AddJwtSecurity(signingConfigurations, tokenConfigurations);
+
+
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            
+            services.AddCors();
+            IdentityModelEventSource.ShowPII = true;
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -53,12 +81,33 @@ namespace Api
 
             app.UseRouting();
 
+            app.UseCors(x => x
+                .AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader());
+
             app.UseAuthorization();
+            app.UseAuthentication();
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
             });
+        }
+    }
+
+    public class DesignTimeDbContextFactory : IDesignTimeDbContextFactory<Entidades.EntidadesContext>
+    {
+        public Entidades.EntidadesContext CreateDbContext(string[] args)
+        {
+            IConfigurationRoot configuration = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json")
+                .Build();
+            var builder = new DbContextOptionsBuilder<Entidades.EntidadesContext>();
+            var connectionString = configuration.GetConnectionString("ConnStr");
+            builder.UseSqlServer(connectionString);
+            return new Entidades.EntidadesContext(builder.Options);
         }
     }
 }
