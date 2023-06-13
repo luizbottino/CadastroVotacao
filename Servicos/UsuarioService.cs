@@ -27,6 +27,8 @@ namespace Servicos
                 Id = c.Id,
                 UserName = c.UserName,
                 Role = c.Role,
+                Nome = c.Nome,
+                Email = c.Email,
             }).FirstOrDefaultAsync();
         }
 

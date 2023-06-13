@@ -37,6 +37,9 @@ namespace Api
             services.AddMemoryCache();
             services.AddApplicationInsightsTelemetry();
 
+            var key = Encoding.ASCII.GetBytes(Configuration.GetSection("Configuracoes:SecretKey").Value);
+            services.AddSingleton(Configuration.GetSection("Configuracoes").Get<Servicos.Constantes>());
+
             services.AddDbContext<Entidades.EntidadesContext>(options => options.UseSqlServer(Configuration.GetConnectionString("ConnStr"), x => x.MigrationsAssembly("Entidades")));
             services.AddScoped<Entidades.EntidadesContext, Entidades.EntidadesContext>();
 

@@ -17,12 +17,12 @@ namespace Api.Controllers
         private readonly IWebHostEnvironment _env;
 
         public ContaController(
-            Servicos.UsuarioService srvPart
-            //Servicos.Constantes configs
+            Servicos.UsuarioService srvPart,
+            Servicos.Constantes configs
             )
         { 
             _srvPart = srvPart; 
-            //_configs = configs;
+            _configs = configs;
         }
 
         [HttpPost]
