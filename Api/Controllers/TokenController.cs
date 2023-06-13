@@ -19,43 +19,30 @@ namespace Api.Controllers
         {
             try
             {
-
-                var admin = await accessManager.ValidateCredentialsAdmin(credenciais);
-                if (admin != null)
+                if (credenciais.ClientId != "Hck2dkWtZecy4eAq")
                 {
-                    //await srvUsuario.RegistrarLogin(Request.Headers["User-Agent"], admin.Id);
-                    return Ok(accessManager.GenerateTokenAdmin(admin));
+                    var user = await accessManager.ValidateCredentials(credenciais);
+                    if (user != null)
+                    {
+                        return Ok(accessManager.GenerateToken(user));
+                    }
+                    else
+                    {
+                        return BadRequest("Usuário e/ou senha incorretos.");
+                    }
                 }
                 else
                 {
-                    return BadRequest("Falha ao autenticar");
+                    var admin = await accessManager.ValidateCredentialsAdmin(credenciais);
+                    if (admin != null)
+                    {
+                        return Ok(accessManager.GenerateTokenAdmin(admin));
+                    }
+                    else
+                    {
+                        return BadRequest("Falha ao autenticar");
+                    }
                 }
-                //if (credenciais.ClientId != "Hck2dkWtZecy4eAq")
-                //{
-                //    var user = await accessManager.ValidateCredentials(credenciais);
-                //    if (user != null)
-                //    {
-                //        //var result = srvParticipante.RegistrarLogin(Request.Headers["User-Agent"], user.Id);
-                //        return Ok(accessManager.GenerateToken(user));
-                //    }
-                //    else
-                //    {
-                //        return BadRequest("Dados incorretos.");
-                //    }
-                //}
-                //else
-                //{
-                //    var admin = await accessManager.ValidateCredentialsAdmin(credenciais);
-                //    if (admin != null)
-                //    {
-                //        //await srvUsuario.RegistrarLogin(Request.Headers["User-Agent"], admin.Id);
-                //        return Ok(accessManager.GenerateTokenAdmin(admin));
-                //    }
-                //    else
-                //    {
-                //        return BadRequest("Falha ao autenticar");
-                //    }
-                //}
             }
             catch (ArgumentException ex)
             {

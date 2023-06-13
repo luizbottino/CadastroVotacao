@@ -53,5 +53,31 @@ namespace Api.Controllers
             }
 
         }
+
+        [HttpPost]
+        [Route("cadastro")]
+        [AllowAnonymous]
+        public async Task<IActionResult> Post([FromBody] ViewModels.UsuarioCadastroViewModel model)
+        {
+            try
+            {
+                model.DataCadastro = DateTime.Now;
+
+                model.Senha = Util.Utilitario.CalculateSHA1(model.Senha);
+               
+                var part = await _srvPart.Cadastrar(model);
+
+                return Ok(new { id = part.Id});
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+
+        }
     }
 }

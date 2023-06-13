@@ -71,15 +71,13 @@ namespace Api.Controllers
 
         //[HttpPost]
         //[AllowAnonymous]
-        //public async Task<IActionResult> Post([FromBody] ViewModels.ParticipanteCadastroViewModel model)
+        //public async Task<IActionResult> Post([FromBody] ViewModels.UsuarioCadastroViewModel model)
         //{
         //    try
         //    {
         //        var part = await _srvPart.Cadastrar(model);
 
-        //        await EnviarEmail(model);
-
-        //        return Ok(new { id = part.Id, perfil = part.Perfil, tema = part.Tema });
+        //        return Ok(new { id = part.Id});
         //    }
         //    catch (ArgumentException ex)
         //    {
@@ -90,45 +88,45 @@ namespace Api.Controllers
         //        return StatusCode(500, ex.Message);
         //    }
 
-        //}
-        //private async Task EnviarEmail(ViewModels.ParticipanteCadastroViewModel model)
-        //{
-        //    string html = "";
-        //    string perfil = "";
+            //}
+            //private async Task EnviarEmail(ViewModels.ParticipanteCadastroViewModel model)
+            //{
+            //    string html = "";
+            //    string perfil = "";
 
-        //    if (model.Resposta1 == "A")
-        //    {
-        //        html = Directory.GetCurrentDirectory() + "\\Emkt\\perfil\\explorador.html";
-        //        perfil = "Explorador";
-        //    }
-        //    else if (model.Resposta1 == "B")
-        //    {
-        //        html = Directory.GetCurrentDirectory() + "\\Emkt\\perfil\\futuro-empreendedor.html";
-        //        perfil = "Futuro Empreendedor Digital";
-        //    }
-        //    else if (model.Resposta1 == "C")
-        //    {
-        //        html = Directory.GetCurrentDirectory() + "\\Emkt\\perfil\\vendedor-digital.html";
-        //        perfil = "Vendedor Digital";
-        //    }
-        //    else if (model.Resposta1 == "D")
-        //    {
-        //        html = Directory.GetCurrentDirectory() + "\\Emkt\\perfil\\expert-vendas.html";
-        //        perfil = "Expert em Vendas na internet";
-        //    }
+            //    if (model.Resposta1 == "A")
+            //    {
+            //        html = Directory.GetCurrentDirectory() + "\\Emkt\\perfil\\explorador.html";
+            //        perfil = "Explorador";
+            //    }
+            //    else if (model.Resposta1 == "B")
+            //    {
+            //        html = Directory.GetCurrentDirectory() + "\\Emkt\\perfil\\futuro-empreendedor.html";
+            //        perfil = "Futuro Empreendedor Digital";
+            //    }
+            //    else if (model.Resposta1 == "C")
+            //    {
+            //        html = Directory.GetCurrentDirectory() + "\\Emkt\\perfil\\vendedor-digital.html";
+            //        perfil = "Vendedor Digital";
+            //    }
+            //    else if (model.Resposta1 == "D")
+            //    {
+            //        html = Directory.GetCurrentDirectory() + "\\Emkt\\perfil\\expert-vendas.html";
+            //        perfil = "Expert em Vendas na internet";
+            //    }
 
-        //    string layout_html = System.IO.File.ReadAllText(html, System.Text.Encoding.Default);
-        //    layout_html = layout_html.Replace("[NOME]", model.Nome);
-        //    layout_html = layout_html.Replace("[PERFIL]", perfil);
-        //    layout_html = layout_html.Replace("[RESPOSTA1]", model.Resposta1);//NAO E NECESSARIO ALTERAR ESTE VALOR
-        //    layout_html = layout_html.Replace("[RESPOSTA2]", model.Resposta2);
-        //    layout_html = layout_html.Replace("[RESPOSTA3]", model.Resposta3);
-        //    layout_html = layout_html.Replace("[RESPOSTA4]", model.Resposta4);
-        //    layout_html = layout_html.Replace("[RESPOSTA5]", model.Resposta5);
-        //    layout_html = layout_html.Replace("[RESPOSTA6]", model.Resposta6);
+            //    string layout_html = System.IO.File.ReadAllText(html, System.Text.Encoding.Default);
+            //    layout_html = layout_html.Replace("[NOME]", model.Nome);
+            //    layout_html = layout_html.Replace("[PERFIL]", perfil);
+            //    layout_html = layout_html.Replace("[RESPOSTA1]", model.Resposta1);//NAO E NECESSARIO ALTERAR ESTE VALOR
+            //    layout_html = layout_html.Replace("[RESPOSTA2]", model.Resposta2);
+            //    layout_html = layout_html.Replace("[RESPOSTA3]", model.Resposta3);
+            //    layout_html = layout_html.Replace("[RESPOSTA4]", model.Resposta4);
+            //    layout_html = layout_html.Replace("[RESPOSTA5]", model.Resposta5);
+            //    layout_html = layout_html.Replace("[RESPOSTA6]", model.Resposta6);
 
-        //    await Util.Utilitario.EnviarEmailAsync(model.Email, "Quiz", layout_html, layout_html);
-        //}
+            //    await Util.Utilitario.EnviarEmailAsync(model.Email, "Quiz", layout_html, layout_html);
+            //}
 
+        }
     }
-}

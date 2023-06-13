@@ -58,24 +58,24 @@ namespace Servicos
         //    await _db.SaveChangesAsync();
         //}
 
-        //public async Task<UsuarioViewModel> Cadastrar(ViewModels.UsuarioCadastroViewModel model)
-        //{
-        //    if (!await _db.Usuarios.AnyAsync(c => c.UserName == model.UserName))
-        //    {
-        //        var part = model.ToEntidade();
+        public async Task<UsuarioViewModel> Cadastrar(ViewModels.UsuarioCadastroViewModel model)
+        {
+            if (!await _db.Usuarios.AnyAsync(c => c.UserName == model.UserName))
+            {
+                var part = model.ToEntidade();
 
-        //        _db.Usuarios.Add(part);
-        //        await _db.SaveChangesAsync();
+                _db.Usuarios.Add(part);
+                await _db.SaveChangesAsync();
 
-        //        return new UsuarioViewModel
-        //        {
-        //            Id = part.Id,
-        //            UserName = part.UserName,
-        //            Role = part.Role
-        //        };
-        //    }
-        //    else
-        //        throw new ArgumentException("Username ou Email já cadastrado");
-        //}
+                return new UsuarioViewModel
+                {
+                    Id = part.Id,
+                    UserName = part.UserName,
+                    Role = part.Role
+                };
+            }
+            else
+                throw new ArgumentException("Username ou Email já cadastrado");
+        }
     }
 }

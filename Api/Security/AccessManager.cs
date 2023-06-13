@@ -88,7 +88,8 @@ namespace Api.Security
             );
 
             DateTime dataCriacao = DateTime.Now;
-            DateTime dataExpiracao = DateTime.UtcNow.AddMinutes(60);
+            DateTime dataExpiracao = dataCriacao +
+                TimeSpan.FromMinutes(_tokenConfigurations.Minutes);
 
             var handler = new JwtSecurityTokenHandler();
             var securityToken = handler.CreateToken(new SecurityTokenDescriptor
