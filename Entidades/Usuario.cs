@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Entidades
 {
@@ -16,22 +17,26 @@ namespace Entidades
         public string UF { get; set; }
         public string Role { get; set; }
         public DateTime DataCadastro { get; set; }
+        public List<Poema> Poema { get; set; }
+        public List<Voto> Votos { get; set; }
 
     }
     public class UsuarioConfig : IEntityTypeConfiguration<Usuario>
     {
-        public void Configure(EntityTypeBuilder<Usuario> builder)
+        public void Configure(EntityTypeBuilder<Usuario> modelBuilder)
         {
-            builder.HasKey(x => x.Id);
-            builder.HasIndex(x => x.UserName).IsUnique();
-            builder.Property(x => x.UserName).HasColumnType("varchar(100)");
-            builder.Property(c => c.Nome).HasColumnType("varchar(255)");
-            builder.Property(c => c.Email).HasColumnType("varchar(255)");
-            builder.Property(c => c.CPF).HasColumnType("varchar(14)");
-            builder.Property(c => c.UF).HasColumnType("varchar(2)");
-            builder.Property(x => x.Senha).HasColumnType("varchar(100)");
-            builder.Property(x => x.Role).HasColumnType("varchar(100)");
-            builder.Property(x => x.DataCadastro).HasColumnType("datetime");
+            modelBuilder.HasKey(x => x.Id);
+            modelBuilder.HasIndex(x => x.UserName).IsUnique();
+            modelBuilder.Property(x => x.UserName).HasColumnType("varchar(100)");
+            modelBuilder.Property(c => c.Nome).HasColumnType("varchar(255)");
+            modelBuilder.Property(c => c.Email).HasColumnType("varchar(255)");
+            modelBuilder.Property(c => c.CPF).HasColumnType("varchar(14)");
+            modelBuilder.Property(c => c.UF).HasColumnType("varchar(2)");
+            modelBuilder.Property(x => x.Senha).HasColumnType("varchar(100)");
+            modelBuilder.Property(x => x.Role).HasColumnType("varchar(100)");
+            modelBuilder.Property(x => x.DataCadastro).HasColumnType("datetime");
+
+            modelBuilder.HasMany(c => c.Poema).WithOne(c => c.Usuario).HasForeignKey(c => c.IdUsuario).OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

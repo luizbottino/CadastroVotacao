@@ -29,6 +29,7 @@ namespace Servicos
                 Role = c.Role,
                 Nome = c.Nome,
                 Email = c.Email,
+                DataCadastro = c.DataCadastro,
             }).FirstOrDefaultAsync();
         }
 
