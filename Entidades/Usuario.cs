@@ -17,7 +17,7 @@ namespace Entidades
         public string UF { get; set; }
         public string Role { get; set; }
         public DateTime DataCadastro { get; set; }
-        public List<Poema> Poema { get; set; }
+        public ICollection<Poema> Poemas { get; set; }
         public List<Voto> Votos { get; set; }
 
     }
@@ -36,7 +36,7 @@ namespace Entidades
             modelBuilder.Property(x => x.Role).HasColumnType("varchar(100)");
             modelBuilder.Property(x => x.DataCadastro).HasColumnType("datetime");
 
-            modelBuilder.HasMany(c => c.Poema).WithOne(c => c.Usuario).HasForeignKey(c => c.IdUsuario).OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.HasMany(c => c.Poemas).WithOne(c => c.Usuario).HasForeignKey(c => c.IdUsuario).OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

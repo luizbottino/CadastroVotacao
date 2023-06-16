@@ -1,4 +1,5 @@
 using Api.Security;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -12,6 +13,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Logging;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System;
 using System.Collections.Generic;
@@ -43,7 +45,9 @@ namespace Api
             services.AddDbContext<Entidades.EntidadesContext>(options => options.UseSqlServer(Configuration.GetConnectionString("ConnStr"), x => x.MigrationsAssembly("Entidades")));
             services.AddScoped<Entidades.EntidadesContext, Entidades.EntidadesContext>();
 
+            services.AddCors();
             services.AddControllers();
+            services.AddScoped<Servicos.PoemaService>();
             services.AddScoped<Servicos.UsuarioService>();
             services.AddScoped<AccessManager>();
             services.AddScoped<UsuarioLogado>();
@@ -65,8 +69,7 @@ namespace Api
 
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-            
-            services.AddCors();
+
             IdentityModelEventSource.ShowPII = true;
         }
 
@@ -89,8 +92,9 @@ namespace Api
                 .AllowAnyMethod()
                 .AllowAnyHeader());
 
-            app.UseAuthorization();
             app.UseAuthentication();
+            app.UseAuthorization();
+            
 
             app.UseEndpoints(endpoints =>
             {
