@@ -14,6 +14,7 @@ namespace Entidades
         public Usuario Usuario { get; set; }
         public int IdPoema { get; set; }
         public Poema Poema{ get; set; }
+        public int Nota { get; set; }
         public DateTime Data { get; set; }
 
 
@@ -24,6 +25,7 @@ namespace Entidades
         {
             modelBuilder.HasKey(c => new { c.IdUsuario, c.IdPoema });
 
+            modelBuilder.Property(c => c.Nota).HasColumnType("integer");
             modelBuilder.HasOne(c => c.Usuario).WithMany(c => c.Votos).HasForeignKey(c => c.IdUsuario).OnDelete(DeleteBehavior.Cascade);
             modelBuilder.HasOne(c => c.Poema).WithMany(c => c.Votos).HasForeignKey(c => c.IdPoema).OnDelete(DeleteBehavior.NoAction);
 

@@ -14,8 +14,6 @@ namespace ViewModels
             Id = part.Id;
             Nome = part.Nome;
             Email = part.Email;
-            //Perfil = part.Perfil;
-            //Tema = part.Tema;
         }
         public int Id { get; set; }
         public string UserName { get; set; }

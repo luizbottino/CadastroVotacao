@@ -46,15 +46,13 @@ namespace Api.Controllers
         {
             try
             {
-                var rec = await _srvPoem.Recuperar(_usuario.Id);
+                var poema = await _srvPoem.Recuperar(_usuario.Id);
 
-                if (rec == null)
+                if (poema == null)
                     return NotFound();
 
-                //rec.Foto = $@"https://stgseachegue.blob.core.windows.net/fotos/{rec.Foto}";
-                //rec.Video = $@"https://stgseachegue.blob.core.windows.net/videos/{rec.Video}";
 
-                return Ok(rec);
+                return Ok(poema);
             }
             catch (ArgumentException e)
             {
@@ -66,74 +64,22 @@ namespace Api.Controllers
             }
         }
 
-        //[HttpGet]
-        //[AllowAnonymous]
-        //[Route("top20")]
-        //public async Task<IActionResult> GetTop20()
-        //{
-        //    try
-        //    {
-        //        var lista = await _srvPoem.Listar(true, false, _usuario.Id);
-
-        //        lista.ForEach(x =>
-        //        {
-        //            x.Foto = $@"https://stgseachegue.blob.core.windows.net/fotos/{x.Foto}";
-        //            x.Video = $@"https://stgseachegue.blob.core.windows.net/videos/{x.Video}";
-        //        });
-
-
-        //        return Ok(lista);
-        //    }
-        //    catch (ArgumentException e)
-        //    {
-        //        return BadRequest(e.Message);
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        return StatusCode(500, new { mensagem = "Ocorreu um erro na aplicação", exeption = e.Message });
-        //    }
-        //}
-
-        //[HttpGet]
-        //[AllowAnonymous]
-        //[Route("top5")]
-        //public async Task<IActionResult> GetTop5()
-        //{
-        //    try
-        //    {
-        //        var lista = await _srvPoem.Listar(false, true, _usuario.Id);
-
-        //        lista.ForEach(x =>
-        //        {
-        //            x.Foto = $@"https://stgseachegue.blob.core.windows.net/fotos/{x.Foto}";
-        //            x.Video = $@"https://stgseachegue.blob.core.windows.net/videos/{x.Video}";
-        //        });
-
-
-        //        return Ok(lista);
-        //    }
-        //    catch (ArgumentException e)
-        //    {
-        //        return BadRequest(e.Message);
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        return StatusCode(500, new { mensagem = "Ocorreu um erro na aplicação", exeption = e.Message });
-        //    }
-        //}
 
         [HttpPost]
-        [Route("votar/{idReceita}")]
-        public async Task<IActionResult> Votar([FromRoute] int idReceita)
+        [Route("votar/{idPoema},{Nota}")]
+        public async Task<IActionResult> Votar([FromRoute] int idPoema, int nota)
         {
             try
             {
-                if (DateTime.Now < new DateTime(2023, 6, 12))
-                    return BadRequest("O período para votar ainda não se iniciou, aguarde.");
+                if (nota >= 1 && nota <= 5)
+                {
+                    await _srvPoem.Votar(_usuario.Id, idPoema, nota);
 
-                await _srvPoem.Votar(_usuario.Id, idReceita);
+                    return Ok();
+                }
+                else
+                    return BadRequest("A nota deve ser entre 1 e 5!");
 
-                return Ok();
             }
             catch (ArgumentException e)
             {
@@ -144,78 +90,6 @@ namespace Api.Controllers
                 return StatusCode(500, new { mensagem = "Ocorreu um erro na aplicação", exeption = e.Message });
             }
         }
-
-        //[HttpDelete]
-        //[AllowAnonymous]
-        //[ApiExplorerSettings(IgnoreApi = true)]
-        //[Route("voto/{matricula}")]
-        //public async Task<IActionResult> DeleteVoto([FromRoute] string matricula)
-        //{
-        //    try
-        //    {
-        //        await _srvPoem.ZerarVoto(matricula);
-
-        //        return Ok();
-        //    }
-        //    catch (ArgumentException e)
-        //    {
-        //        return BadRequest(e.Message);
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        return StatusCode(500, new { mensagem = "Ocorreu um erro na aplicação", exeption = e.Message });
-        //    }
-        //}
-
-
-        //[HttpDelete]
-        //[AllowAnonymous]
-        //[ApiExplorerSettings(IgnoreApi = true)]
-        //[Route("{matricula}")]
-        //public async Task<IActionResult> Delete([FromRoute] string matricula)
-        //{
-        //    try
-        //    {
-        //        await _srvPoem.Zerar(matricula);
-
-        //        return Ok();
-        //    }
-        //    catch (ArgumentException e)
-        //    {
-        //        return BadRequest(e.Message);
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        return StatusCode(500, new { mensagem = "Ocorreu um erro na aplicação", exeption = e.Message });
-        //    }
-        //}
-
-        //[HttpPost]
-        //[Route("video")]
-        //[RequestSizeLimit(524288000)]
-        //public async Task<IActionResult> UploadVideo([FromForm] IFormFile anexo)
-        //{
-        //    int linha = 1;
-        //    try
-        //    {
-        //        MemoryStream contents = new MemoryStream();
-        //        if (anexo != null && anexo.Length > 0)
-        //        {
-        //            string nomeVideo = $"{DateTime.Now.Ticks}.mp4";
-        //            anexo.CopyTo(contents);
-
-        //            await Util.Utilitario.UpLoadBlobAsync(contents, nomeVideo, "videos", anexo.ContentType, _configs.StorageConn);
-
-        //            return Ok($@"https://stgseachegue.blob.core.windows.net/videos/{nomeVideo}");
-        //        }
-        //        return BadRequest("Arquivo não enviado");
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return StatusCode(500, $"Erro na linha {linha}: {ex.Message}");
-        //    }
-
-        //}
 
 
         [HttpPost]

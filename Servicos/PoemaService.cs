@@ -37,21 +37,27 @@ namespace Servicos
             return null;
         }
 
-        public async Task Votar(int idUsuario, int idPoema)
+        public async Task Votar(int idUsuario, int idPoema, int nota)
         {
             var query = $@"
-                DECLARE @idPoema INT = {idPoema}, @idUsuario INT = {idUsuario}, @qtd INT
+                DECLARE @idPoema INT = {idPoema}, @idUsuario INT = {idUsuario}, @Nota INT = {nota}, @qtd INT
 
                 IF NOT EXISTS (SELECT 1 FROM Voto v WHERE v.IdUsuario = @idUsuario)
                 BEGIN
-	                INSERT INTO Voto (IdUsuario, IdPoema, Data)
-	                VALUES (@idUsuario, @idPoema, GETDATE());
+	                INSERT INTO Voto (IdUsuario, IdPoema, Data, Nota)
+	                VALUES (@idUsuario, @idPoema, GETDATE(), @Nota);
 
 
 	                SELECT @qtd = COUNT(1) FROM Voto v WHERE v.IdPoema = @idPoema
 
 
 	                UPDATE Poema SET TotalVotos = @qtd WHERE Id = @idPoema
+                END
+                ELSE
+                BEGIN
+                    UPDATE Voto
+                    SET IdUsuario = @idUsuario, IdPoema = @idPoema, Data = GETDATE(), Nota = @Nota
+                    WHERE IdUsuario = @idUsuario
                 END
 
             ";
@@ -68,8 +74,6 @@ namespace Servicos
 
             if (user.Poemas != null)
             {
-                foreach (Poema poema in user.Poemas)
-                {
                     _db.Poemas.Add(new Poema
                     {
                         Titulo = model.Titulo,
@@ -79,7 +83,6 @@ namespace Servicos
                     });
                 }
                 
-            }
 
             await _db.SaveChangesAsync();
         }
