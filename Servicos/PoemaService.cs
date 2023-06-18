@@ -1,6 +1,7 @@
 ﻿using Entidades;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,14 +20,14 @@ namespace Servicos
             _db.Database.SetCommandTimeout(600);
         }
 
-        public async Task<PoemaCadastroViewModel> Recuperar(int idUsuario)
+        public async Task<PoemaListaViewModel> Recuperar(int idUsuario)
         {
             var poem = await _db.Poemas.Include(c => c.Usuario).FirstOrDefaultAsync(c => c.IdUsuario == idUsuario);
 
 
             if (poem != null)
             {
-                return new PoemaCadastroViewModel
+                return new PoemaListaViewModel
                 {
                     IdUsuario = idUsuario,
                     Titulo = poem.Titulo,
@@ -35,6 +36,31 @@ namespace Servicos
             }
 
             return null;
+        }
+
+        public async Task<List<PoemaListaViewModel>> RecuperarVotacao(int idUsuario)
+        {
+            var poem = await _db.Poemas.Include(c => c.Votos).ToListAsync();
+            
+            var lista = new List<PoemaListaViewModel>();
+
+            if (poem != null)
+            {
+                poem.ForEach(poem =>
+                {
+                    lista.Add(new PoemaListaViewModel
+                    {
+                        Id = poem.Id,
+                        Titulo = poem.Titulo,
+                        Descricao = poem.Descricao,
+                        TotalVotos = poem.TotalVotos,
+                        IdUsuario = poem.IdUsuario,
+                        DataCadastro = poem.DataCadastro,
+                        JaVotou = idUsuario > 0 ? poem.Votos.Any(x => x.IdUsuario == idUsuario) : false
+                    });
+                });
+            }
+            return lista;
         }
 
         public async Task Votar(int idUsuario, int idPoema, int nota)

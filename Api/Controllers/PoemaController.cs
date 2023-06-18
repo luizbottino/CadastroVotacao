@@ -64,6 +64,30 @@ namespace Api.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("ListarVotacao")]
+        public async Task<ActionResult<PoemaListaViewModel>> ListarVotacao()
+        {
+            try
+            {
+                var poema = await _srvPoem.RecuperarVotacao(_usuario.Id);
+
+                if (poema == null)
+                    return NotFound();
+
+
+                return Ok(poema);
+            }
+            catch (ArgumentException e)
+            {
+                return BadRequest(e.Message);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, new { mensagem = "Ocorreu um erro na aplicação", exeption = e.Message });
+            }
+        }
+
 
         [HttpPost]
         [Route("votar/{idPoema},{Nota}")]
