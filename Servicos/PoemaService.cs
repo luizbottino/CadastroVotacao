@@ -20,24 +20,6 @@ namespace Servicos
             _db.Database.SetCommandTimeout(600);
         }
 
-        public async Task<PoemaListaViewModel> Recuperar(int idUsuario)
-        {
-            var poem = await _db.Poemas.Include(c => c.Usuario).FirstOrDefaultAsync(c => c.IdUsuario == idUsuario);
-
-
-            if (poem != null)
-            {
-                return new PoemaListaViewModel
-                {
-                    IdUsuario = idUsuario,
-                    Titulo = poem.Titulo,
-                    Descricao = poem.Descricao,
-                };
-            }
-
-            return null;
-        }
-
         public async Task<List<PoemaListaViewModel>> RecuperarVotacao(int idUsuario)
         {
             var poem = await _db.Poemas.Include(c => c.Votos).ToListAsync();
