@@ -68,7 +68,7 @@ namespace Servicos
             var query = $@"
                 DECLARE @idPoema INT = {idPoema}, @idUsuario INT = {idUsuario}, @Nota INT = {nota}, @qtd INT
 
-                IF NOT EXISTS (SELECT 1 FROM Voto v WHERE v.IdUsuario = @idUsuario)
+                IF NOT EXISTS (SELECT 1 FROM Voto v WHERE v.IdUsuario = @idUsuario AND v.IdPoema = @idPoema)
                 BEGIN
 	                INSERT INTO Voto (IdUsuario, IdPoema, Data, Nota)
 	                VALUES (@idUsuario, @idPoema, GETDATE(), @Nota);
@@ -83,7 +83,12 @@ namespace Servicos
                 BEGIN
                     UPDATE Voto
                     SET IdUsuario = @idUsuario, IdPoema = @idPoema, Data = GETDATE(), Nota = @Nota
-                    WHERE IdUsuario = @idUsuario
+                    WHERE IdUsuario = @idUsuario AND IdPoema = @idPoema
+
+                    SELECT @qtd = COUNT(1) FROM Voto v WHERE v.IdPoema = @idPoema
+
+
+	                UPDATE Poema SET TotalVotos = @qtd WHERE Id = @idPoema
                 END
 
             ";

@@ -42,29 +42,7 @@ namespace Api.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get()
-        {
-            try
-            {
-                var poema = await _srvPoem.Recuperar(_usuario.Id);
-
-                if (poema == null)
-                    return NotFound();
-
-
-                return Ok(poema);
-            }
-            catch (ArgumentException e)
-            {
-                return BadRequest(e.Message);
-            }
-            catch (Exception e)
-            {
-                return StatusCode(500, new { mensagem = "Ocorreu um erro na aplicação", exeption = e.Message });
-            }
-        }
-
-        [HttpGet]
+        [Authorize(Policy = "Bearer")]
         [Route("ListarVotacao")]
         public async Task<ActionResult<PoemaListaViewModel>> ListarVotacao()
         {
@@ -90,6 +68,7 @@ namespace Api.Controllers
 
 
         [HttpPost]
+        [Authorize(Policy = "Bearer")]
         [Route("votar/{idPoema},{Nota}")]
         public async Task<IActionResult> Votar([FromRoute] int idPoema, int nota)
         {
@@ -117,6 +96,7 @@ namespace Api.Controllers
 
 
         [HttpPost]
+        [Authorize(Policy = "Bearer")]
         [Route("cadastrar")]
         public async Task<IActionResult> Post([FromBody] ViewModels.PoemaCadastroViewModel model)
         {
