@@ -22,26 +22,17 @@ namespace Servicos
 
         public async Task<List<PoemaListaViewModel>> RecuperarVotacao(int idUsuario)
         {
-            var poem = await _db.Poemas.Include(c => c.Votos).ToListAsync();
-            
-            var lista = new List<PoemaListaViewModel>();
-
-            if (poem != null)
+            var lista = await _db.Poemas.Select(poem => new PoemaListaViewModel
             {
-                poem.ForEach(poem =>
-                {
-                    lista.Add(new PoemaListaViewModel
-                    {
-                        Id = poem.Id,
-                        Titulo = poem.Titulo,
-                        Descricao = poem.Descricao,
-                        TotalVotos = poem.TotalVotos,
-                        IdUsuario = poem.IdUsuario,
-                        DataCadastro = poem.DataCadastro,
-                        JaVotou = idUsuario > 0 ? poem.Votos.Any(x => x.IdUsuario == idUsuario) : false
-                    });
-                });
-            }
+                Id = poem.Id,
+                Titulo = poem.Titulo,
+                Descricao = poem.Descricao,
+                TotalVotos = poem.TotalVotos,
+                IdUsuario = poem.IdUsuario,
+                DataCadastro = poem.DataCadastro,
+                JaVotou = poem.Votos.Any(x => x.IdUsuario == idUsuario)
+            }).ToListAsync();
+            
             return lista;
         }
 
@@ -87,14 +78,14 @@ namespace Servicos
 
             if (user.Poemas != null)
             {
-                    _db.Poemas.Add(new Poema
+                _db.Poemas.Add(new Poema
                     {
-                        Titulo = model.Titulo,
-                        Descricao = model.Descricao,
-                        IdUsuario = model.IdUsuario,
-                        DataCadastro = DateTime.Now,
-                    });
-                }
+                    Titulo = model.Titulo,
+                    Descricao = model.Descricao,
+                    IdUsuario = model.IdUsuario,
+                    DataCadastro = DateTime.Now,
+                });
+            }
                 
 
             await _db.SaveChangesAsync();
